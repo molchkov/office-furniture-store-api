@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PropertyResource extends JsonResource
+class ProductPropertyValueResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,9 +16,9 @@ class PropertyResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'value' => $this->value,
             'slug' => $this->slug,
-            'values' => PropertyValueResource::collection($this->values)
+            'property' => new ProductPropertyResource($this->property)
         ];
     }
 }

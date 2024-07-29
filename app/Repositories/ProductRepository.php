@@ -15,7 +15,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function filterProducts(?array $filter = []): LengthAwarePaginator
     {
-        $products = $this->product::query();
+        $products = $this->product::with('values.property');
 
         if (!empty($filter)) {
             $products
