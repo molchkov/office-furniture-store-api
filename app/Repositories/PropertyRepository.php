@@ -14,7 +14,7 @@ class PropertyRepository implements PropertyRepositoryInterface
 
     public function getAllPropertiesWithValues(): LengthAwarePaginator
     {
-        return $this->property::with('values')->paginate();
+        return $this->property::with('values')->paginate(request()->per_page ?? 20);
     }
 
     public function getPropertyById(int $id): Property

@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Response;
 
 class PropertyValue extends Model
 {
@@ -22,9 +23,14 @@ class PropertyValue extends Model
     {
         parent::boot();
 
-        static::deleting(function($property) {
+        static::deleting(function ($property) {
             if ($property->products()->exists()) {
-                throw new \Exception("Cannot delete value associated with products.");
+                throw new HttpResponseException(
+                    new Response(
+                        'Cannot delete value associated with products.',
+                        Response::HTTP_UNPROCESSABLE_ENTITY
+                    )
+                );
             }
         });
     }

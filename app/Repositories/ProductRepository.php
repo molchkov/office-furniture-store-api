@@ -19,9 +19,9 @@ class ProductRepository implements ProductRepositoryInterface
 
         if (!empty($filter)) {
             $products
-                ->when(!empty($filter['properties']) && is_array($filter['properties']), function (Builder $query) use ($filter) {
+                ->when(!empty($filter['values']) && is_array($filter['values']), function (Builder $query) use ($filter) {
                     $query->where(function (Builder $query) use ($filter) {
-                        foreach ($filter['properties'] as $value) {
+                        foreach ($filter['values'] as $value) {
                             $query->orWhere(function (Builder $query) use ($value) {
                                 $query->whereHas('values', function (Builder $query) use ($value) {
                                     $query->where('slug', $value);
@@ -30,18 +30,18 @@ class ProductRepository implements ProductRepositoryInterface
                         }
                     });
                 })
-                ->when(!empty($filter['minPrice']), function (Builder $query) use ($filter) {
-                    $query->where('price','>=', $filter['minPrice']);
+                ->when(!empty($filter['min_price']), function (Builder $query) use ($filter) {
+                    $query->where('price','>=', $filter['min_price']);
                 })
-                ->when(!empty($filter['maxPrice']), function (Builder $query) use ($filter) {
-                    $query->where('price','<=', $filter['maxPrice']);
+                ->when(!empty($filter['max_price']), function (Builder $query) use ($filter) {
+                    $query->where('price','<=', $filter['max_price']);
                 })
                 ->when(!empty($filter['search']), function (Builder $query) use ($filter) {
                     $query->where('name','like', '%' . $filter['search'] . '%');
                 });
         }
 
-        return $products->paginate(40);
+        return $products->paginate(request()->per_page ?? 40);
     }
 
     public function getProductBySlug(string $slug): Product

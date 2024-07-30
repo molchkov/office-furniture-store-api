@@ -19,7 +19,7 @@ class PropertyValueRepository implements PropertyValueRepositoryInterface
     {
         $propertyValue = $this->getPropertyValueById($id);
         $propertyValue->update([
-            'name' => $data['name'],
+            'value' => $data['value'],
             'slug' => $data['slug']
         ]);
 

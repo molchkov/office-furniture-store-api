@@ -83,4 +83,7 @@ curl --request POST \
 }'
 ```
 
+## API Documentation
+
+To view the [Swagger](https://github.com/DarkaOnLine/L5-Swagger) API Documentation, go to the url http://localhost/api/documentation
 
