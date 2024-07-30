@@ -22,6 +22,13 @@ DB_USERNAME=sail
 DB_PASSWORD=password
 ```
 
+[Laravel Telescope](https://laravel.com/docs/11.x/telescope) was used to debug the application.
+To disable it, you can add this code to the `.env` file:
+
+```dotenv
+TELESCOPE_ENABLED=false
+```
+
 [Running Sail](https://laravel.com/docs/11.x/sail#starting-and-stopping-sail)
 ```shell
 sail up -d
