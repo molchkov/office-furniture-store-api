@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Property;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 class PropertyRepository implements PropertyRepositoryInterface
@@ -67,5 +68,14 @@ class PropertyRepository implements PropertyRepositoryInterface
     public function deleteProperty(int $id): void
     {
         $this->getPropertyById($id)->delete();
+    }
+
+    public function getPropertiesByValues(array $values): array
+    {
+        return $this->property::with(['values' => function ($query) use ($values) {
+            $query->whereIn('slug', $values);
+        }])->whereHas('values', function (Builder $query) use ($values) {
+            $query->whereIn('slug', $values);
+        })->get()->pluck('values.*.slug')->toArray();
     }
 }

@@ -16,4 +16,6 @@ interface PropertyRepositoryInterface
     public function updateProperty(int $id, array $data): Property;
 
     public function deleteProperty(int $id): void;
+
+    public function getPropertiesByValues(array $values): array;
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Repositories\ProductRepositoryInterface;
+use App\Repositories\PropertyRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -15,7 +16,10 @@ use OpenApi\Attributes as OA;
 
 class ProductController extends Controller
 {
-    public function __construct(protected ProductRepositoryInterface $productRepository)
+    public function __construct(
+        protected ProductRepositoryInterface $productRepository,
+        protected PropertyRepositoryInterface $propertyRepository
+    )
     {
     }
 
@@ -72,9 +76,13 @@ class ProductController extends Controller
     #[OA\Response(response: Response::HTTP_OK, description: 'OK', content: new OA\JsonContent())]
     public function index(Request $request): AnonymousResourceCollection
     {
+        $filter = $request->only('min_price', 'max_price', 'search');
+        if ($request->exists('values')) {
+            $filter['values'] = $this->propertyRepository->getPropertiesByValues($request->get('values'));
+        }
         return ProductResource::collection(
             $this->productRepository->filterProducts(
-                $request->only('values', 'min_price', 'max_price', 'search')
+                $filter
             )
         );
     }

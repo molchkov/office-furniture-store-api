@@ -21,11 +21,9 @@ class ProductRepository implements ProductRepositoryInterface
             $products
                 ->when(!empty($filter['values']) && is_array($filter['values']), function (Builder $query) use ($filter) {
                     $query->where(function (Builder $query) use ($filter) {
-                        foreach ($filter['values'] as $value) {
-                            $query->orWhere(function (Builder $query) use ($value) {
-                                $query->whereHas('values', function (Builder $query) use ($value) {
-                                    $query->where('slug', $value);
-                                });
+                        foreach ($filter['values'] as $values) {
+                            $query->whereHas('values', function (Builder $query) use ($values) {
+                                $query->whereIn('slug', $values);
                             });
                         }
                     });
