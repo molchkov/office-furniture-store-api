@@ -16,14 +16,17 @@ class ProductRepository implements ProductRepositoryInterface
     public function filterProducts(?array $filter = []): LengthAwarePaginator
     {
         $products = $this->product::with('values.property');
-
         if (!empty($filter)) {
             $products
-                ->when(!empty($filter['values']) && is_array($filter['values']), function (Builder $query) use ($filter) {
-                    $query->where(function (Builder $query) use ($filter) {
-                        foreach ($filter['values'] as $values) {
-                            $query->whereHas('values', function (Builder $query) use ($values) {
+                ->when(!empty($filter['properties']), function (Builder $query) use ($filter) {
+                    $properties = is_array($filter['properties']) ? $filter['properties'] : json_decode($filter['properties'], true);
+                    $query->where(function (Builder $query) use ($properties) {
+                        foreach ($properties as $key => $values) {
+                            $query->whereHas('values', function (Builder $query) use ($key, $values) {
                                 $query->whereIn('slug', $values);
+                                $query->whereHas('property', function (Builder $query) use ($key, $values) {
+                                    $query->where('slug', $key);
+                                });
                             });
                         }
                     });

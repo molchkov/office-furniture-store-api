@@ -30,11 +30,14 @@ class ProductController extends Controller
         tags: ['Product'],
         parameters: [
             new OA\Parameter(
-                name: 'values[]',
+                name: 'properties',
                 description: 'Array of product property values to filter by',
                 in: 'query',
                 required: false,
-                schema: new OA\Schema(type: 'array', items: new OA\Items(type: 'string'))
+                schema: new OA\Schema(
+                    type: 'object',
+                    example: '{"properties": {"cvet-stolesnicy": ["belyi"], "cvet-nozek": ["belyi", "cernyi"]}}'
+                )
             ),
             new OA\Parameter(
                 name: 'min_price',
@@ -76,13 +79,9 @@ class ProductController extends Controller
     #[OA\Response(response: Response::HTTP_OK, description: 'OK', content: new OA\JsonContent())]
     public function index(Request $request): AnonymousResourceCollection
     {
-        $filter = $request->only('min_price', 'max_price', 'search');
-        if ($request->exists('values')) {
-            $filter['values'] = $this->propertyRepository->getPropertiesByValues($request->get('values'));
-        }
         return ProductResource::collection(
             $this->productRepository->filterProducts(
-                $filter
+                $request->only('properties', 'min_price', 'max_price', 'search')
             )
         );
     }

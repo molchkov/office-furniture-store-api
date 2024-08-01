@@ -15,15 +15,13 @@
                 "operationId": "1ce27f90dd8c39cea9520bf45d58c7c2",
                 "parameters": [
                     {
-                        "name": "values[]",
+                        "name": "properties",
                         "in": "query",
                         "description": "Array of product property values to filter by",
                         "required": false,
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
+                            "type": "object",
+                            "example": "{\"properties\": {\"cvet-stolesnicy\": [\"belyi\"], \"cvet-nozek\": [\"belyi\", \"cernyi\"]}}"
                         }
                     },
                     {
